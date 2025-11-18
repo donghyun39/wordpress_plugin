@@ -73,42 +73,6 @@ final class Emails
                     'subject' => '[관리자] 결제 완료: {{order.number}}',
                     'body'    => "<p>아래 주문의 결제가 완료되었습니다.</p>\n{{items.table}}\n<p><strong>합계:</strong> {{totals.grand}} {{currency}}</p>\n<p>고객: {{customer.name}} / {{customer.email}} / {{customer.phone}}</p>"
                 ],
-                'shipping_started_customer' => [
-                    'subject' => '{{store.name}} 배송 시작: {{order.number}}',
-                    'body'    => "<p>{{customer.name}} 님, 상품이 출고되었습니다.</p>\n<p>송장: {{shipping.tracking}} ({{shipping.carrier}})</p>\n{{items.table}}\n<p><a href=\"{{order.url}}\">배송 상태 확인</a></p>"
-                ],
-                'shipping_started_admin' => [
-                    'subject' => '[관리자] 배송 시작: {{order.number}}',
-                    'body'    => "<p>주문이 배송 단계로 전환되었습니다.</p>\n<p>송장: {{shipping.tracking}} ({{shipping.carrier}})</p>\n{{items.table}}"
-                ],
-                'order_cancelled_customer' => [
-                    'subject' => '{{store.name}} 주문 취소 안내: {{order.number}}',
-                    'body'    => "<p>{{customer.name}} 님, 요청하신 주문이 취소되었습니다.</p>\n<p>환불/취소 내역을 확인해주세요.</p>\n<p><a href=\"{{order.url}}\">주문 상세</a></p>"
-                ],
-                'order_cancelled_admin' => [
-                    'subject' => '[관리자] 주문 취소: {{order.number}}',
-                    'body'    => "<p>아래 주문이 취소되었습니다.</p>\n{{items.table}}\n<p>고객: {{customer.name}} / {{customer.email}}</p>"
-                ],
-                'order_refunded_customer' => [
-                    'subject' => '{{store.name}} 환불 처리: {{order.number}}',
-                    'body'    => "<p>{{customer.name}} 님, 환불이 진행되었습니다.</p>\n<p>환불 금액: {{totals.refunded}} / {{totals.grand}}</p>\n<p><a href=\"{{order.url}}\">주문 상세</a></p>"
-                ],
-                'order_refunded_admin' => [
-                    'subject' => '[관리자] 환불 처리: {{order.number}}',
-                    'body'    => "<p>주문 환불이 기록되었습니다.</p>\n<p>환불 금액: {{totals.refunded}} / {{totals.grand}}</p>\n{{items.table}}"
-                ],
-            ],
-            'events' => [
-                'order_created_customer' => 1,
-                'order_created_admin'    => 1,
-                'payment_paid_customer'  => 1,
-                'payment_paid_admin'     => 1,
-                'shipping_started_customer' => 1,
-                'shipping_started_admin'    => 1,
-                'order_cancelled_customer'  => 1,
-                'order_cancelled_admin'     => 1,
-                'order_refunded_customer'   => 1,
-                'order_refunded_admin'      => 1,
             ],
         ];
     }
@@ -117,7 +81,6 @@ final class Emails
         $d = $this->defaults();
         $s['email_brand']     = array_merge($d['brand'], (array)($s['email_brand'] ?? []));
         $s['email_templates'] = array_merge($d['templates'], (array)($s['email_templates'] ?? []));
-        $s['email_events']    = array_merge($d['events'], (array)($s['email_events'] ?? []));
         return $s;
     }
 
@@ -199,12 +162,6 @@ final class Emails
                 'order_created_admin'    => '주문 생성 – 관리자',
                 'payment_paid_customer'  => '결제 완료 – 고객',
                 'payment_paid_admin'     => '결제 완료 – 관리자',
-                'shipping_started_customer' => '배송 시작 – 고객',
-                'shipping_started_admin'    => '배송 시작 – 관리자',
-                'order_cancelled_customer'  => '주문 취소 – 고객',
-                'order_cancelled_admin'     => '주문 취소 – 관리자',
-                'order_refunded_customer'   => '환불 처리 – 고객',
-                'order_refunded_admin'      => '환불 처리 – 관리자',
               ];
               ?>
               <p class="description">사용 가능 토큰: <code>{{store.name}}</code>, <code>{{order.number}}</code>, <code>{{items.table}}</code>, <code>{{totals.grand}}</code>, <code>{{currency}}</code>, <code>{{customer.name}}</code>, <code>{{order.url}}</code> 등</p>
@@ -213,10 +170,6 @@ final class Emails
               <?php foreach ($defs as $slug => $label): ?>
                 <h3><?php echo esc_html($label); ?></h3>
                 <table class="form-table">
-                  <tr>
-                    <th scope="row">사용</th>
-                    <td><label><input type="checkbox" name="enabled[<?php echo esc_attr($slug); ?>]" value="1" <?php checked((int)($events[$slug] ?? 1), 1); ?>> 활성화</label></td>
-                  </tr>
                   <tr>
                     <th scope="row">Subject</th>
                     <td><input type="text" name="tpl[<?php echo esc_attr($slug); ?>][subject]" class="regular-text" value="<?php echo esc_attr($tpl[$slug]['subject'] ?? ''); ?>"></td>
@@ -249,12 +202,6 @@ final class Emails
                     <option value="order_created_admin">주문 생성 – 관리자</option>
                     <option value="payment_paid_customer">결제 완료 – 고객</option>
                     <option value="payment_paid_admin">결제 완료 – 관리자</option>
-                    <option value="shipping_started_customer">배송 시작 – 고객</option>
-                    <option value="shipping_started_admin">배송 시작 – 관리자</option>
-                    <option value="order_cancelled_customer">주문 취소 – 고객</option>
-                    <option value="order_cancelled_admin">주문 취소 – 관리자</option>
-                    <option value="order_refunded_customer">환불 처리 – 고객</option>
-                    <option value="order_refunded_admin">환불 처리 – 관리자</option>
                   </select>
                 </td>
               </tr>
@@ -307,10 +254,6 @@ final class Emails
                 $subject = sanitize_text_field($pair['subject'] ?? '');
                 $body    = (string)($pair['body'] ?? '');
                 $s['email_templates'][$slug] = ['subject' => $subject, 'body' => $body];
-            }
-            $enabled = (array)($_POST['enabled'] ?? []);
-            foreach ($s['email_events'] as $slug => $flag) {
-                $s['email_events'][$slug] = isset($enabled[$slug]) ? 1 : 0;
             }
             $this->savePatch($s);
             wp_redirect(admin_url('admin.php?page=hc-settings-emails#templates&updated=1'));
