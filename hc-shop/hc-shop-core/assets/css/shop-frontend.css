@@ -1,0 +1,36 @@
+/* .hc-shop 범위에만 적용 */
+.hc-shop { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+.hc-btn { display:inline-block; padding:8px 12px; border:1px solid #ddd; border-radius:8px; background:#fff; cursor:pointer; }
+.hc-btn.hc-solid { background:#111; color:#fff; border-color:#111; }
+.hc-shop-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px; }
+.hc-card { border:1px solid #eee; border-radius:10px; overflow:hidden; background:#fff; display:flex; flex-direction:column; }
+.hc-thumb { display:block; aspect-ratio:1/1; background:#fafafa; }
+.hc-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+.hc-meta { padding:10px 12px; }
+.hc-title { font-weight:600; margin-bottom:4px; }
+.hc-price { color:#111; }
+.hc-actions { padding:10px 12px; display:flex; gap:8px; }
+.hc-product-detail .hc-detail-wrap { display:grid; grid-template-columns:1.2fr 1fr; gap:24px; }
+.hc-cover img { width:100%; height:auto; border:1px solid #eee; border-radius:10px; }
+.hc-gallery { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+.hc-gallery img { width:80px; height:80px; object-fit:cover; border:1px solid #eee; border-radius:6px; }
+.hc-price-box { font-size:18px; margin:8px 0 16px; }
+.hc-option-box { margin:12px 0; }
+.hc-opt-item { display:flex; align-items:center; gap:8px; padding:6px 0; }
+.hc-buy { display:flex; align-items:center; gap:10px; margin-top:16px; }
+#hc-qty { width:80px; }
+
+
+/* Checkout form */
+.hc-form fieldset{border:1px solid #eee; padding:12px; border-radius:8px; margin-bottom:12px}
+.hc-form legend{font-weight:600; padding:0 6px}
+.hc-form label{display:block; margin:8px 0}
+.hc-form input[type="text"], .hc-form input[type="email"]{width:100%; max-width:420px}
+
+/* 결제 OFF(0) 이면 구매 숨기고 문의 표시 */
+.hc-shop[data-pay-enabled="0"] #hc-buy-now { display: none !important; }
+.hc-shop[data-pay-enabled="0"] #hc-contact { display: inline-block !important; }
+
+/* 결제 ON(1) 이면 반대로 */
+.hc-shop[data-pay-enabled="1"] #hc-buy-now { display: inline-block !important; }
+.hc-shop[data-pay-enabled="1"] #hc-contact { display: none !important; }

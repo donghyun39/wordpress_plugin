@@ -1,0 +1,17 @@
+/* .hc-shop 범위 전용 */
+.hc-cart-table{width:100%; border-collapse:collapse; margin-top:10px}
+.hc-cart-table th,.hc-cart-table td{border-bottom:1px solid #eee; padding:10px; text-align:left; vertical-align:middle}
+.hc-cart-table .thumb{width:64px; height:64px; object-fit:cover; border:1px solid #eee; border-radius:6px; margin-right:8px}
+.hc-cart-table .c-product{display:flex; align-items:center; gap:10px}
+.hc-cart-table .q{width:28px; height:28px; border:1px solid #ddd; background:#fff; border-radius:6px; cursor:pointer}
+.hc-cart-table .qty{width:56px; text-align:center; margin:0 6px}
+.hc-cart-table .c-del .del{border:none; background:none; font-size:16px; cursor:pointer; color:#888}
+.hc-cart-summary{margin-top:14px; border-top:1px solid #eee; padding-top:12px; max-width:520px; margin-left:auto}
+.hc-cart-summary > div{display:flex; justify-content:space-between; margin:6px 0}
+.hc-cart-summary .hc-grand{font-size:18px; font-weight:700}
+.hc-cart-summary .hc-actions{display:flex; gap:8px; justify-content:flex-end; margin-top:8px}
+.hc-btn{display:inline-block; padding:8px 12px; border:1px solid #ddd; border-radius:8px; background:#fff; cursor:pointer}
+.hc-btn.hc-solid{background:#111;color:#fff;border-color:#111}
+@media (max-width:720px){
+  .hc-cart-table th:nth-child(2), .hc-cart-table td:nth-child(2){display:none}
+}

@@ -1,0 +1,19 @@
+/* 모든 규칙은 .hc-shop 또는 .hc-shop__container 아래에서만 적용 */
+.hc-shop .hc-btn,
+.hc-shop__container .hc-btn {
+  display:inline-block; padding:10px 14px; border:1px solid #e1e1e1;
+  border-radius:6px; text-decoration:none; line-height:1.2;
+}
+.hc-shop .hc-cart-summary,
+.hc-shop__container .hc-cart-summary {
+  border:1px solid #eee; padding:12px; border-radius:8px;
+}
+.hc-shop .hc-cart-item,
+.hc-shop__container .hc-cart-item {
+  display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid #eee; padding:8px 0;
+}
+.hc-shop .hc-cart-totals,
+.hc-shop__container .hc-cart-totals { margin-top:12px; }
+.hc-shop .hc-remove,
+.hc-shop__container .hc-remove { cursor:pointer; }
