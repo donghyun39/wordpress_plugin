@@ -7,6 +7,35 @@ final class Mailer
 {
     private string $opt = 'hc_shop_settings';
 
+    private function events(): array
+    {
+        $s = get_option($this->opt, []) ?: [];
+        return (array)($s['email_events'] ?? []);
+    }
+
+    public function sendEvent(string $slug, array $order): bool
+    {
+        $id = (int)($order['id'] ?? 0);
+        if ($id <= 0) return false;
+
+        $events = $this->events();
+        $enabled = $events[$slug] ?? 1;
+        if ((int)$enabled !== 1) return false;
+
+        [$subject, $html] = $this->render($slug, $id);
+        if (!$html) return false;
+
+        $to = '';
+        if (str_contains($slug, '_admin')) {
+            $to = sanitize_email(get_option($this->opt, [])['store_email'] ?? get_option('admin_email'));
+        } else {
+            $to = sanitize_email($order['billing']['email'] ?? '');
+        }
+        if (!$to || !is_email($to)) return false;
+
+        return $this->send($to, $subject, $html, $slug);
+    }
+
     public function render(string $slug, int $orderId): array
     {
         $s = get_option($this->opt, []) ?: [];
@@ -77,6 +106,8 @@ final class Mailer
         $grand    = (int)($o['totals']['grand'] ?? ($o['totals']['grand_total'] ?? 0));
         $currency = get_option($this->opt, [])['currency'] ?? 'KRW';
 
+        $shipData = (array)($o['shipping_data'] ?? []);
+
         return [
             'store' => [
                 'name' => $siteName,
@@ -99,6 +130,9 @@ final class Mailer
                 'address1' => (string)($o['shipping']['address1'] ?? ''),
                 'address2' => (string)($o['shipping']['address2'] ?? ''),
                 'postcode' => (string)($o['shipping']['postcode'] ?? ''),
+                'carrier'  => (string)($shipData['carrier'] ?? ''),
+                'tracking' => (string)($shipData['tracking_number'] ?? ''),
+                'shipped_at' => (string)($shipData['shipped_at'] ?? ''),
             ],
             'items' => [
                 'table' => $this->itemsTable($o['items'] ?? [], $currency),
@@ -107,6 +141,7 @@ final class Mailer
                 'subtotal' => $this->money($subtotal, $currency),
                 'shipping' => $this->money($shipping, $currency),
                 'grand'    => $this->money($grand,    $currency),
+                'refunded' => $this->money((int)($o['refunded_total'] ?? 0), $currency),
             ],
             'currency' => $currency,
         ];
@@ -119,8 +154,8 @@ final class Mailer
             '{{store.name}}','{{store.email}}','{{store.url}}',
             '{{order.number}}','{{order.date}}','{{order.status}}','{{order.url}}',
             '{{customer.name}}','{{customer.email}}','{{customer.phone}}',
-            '{{shipping.address1}}','{{shipping.address2}}','{{shipping.postcode}}',
-            '{{totals.subtotal}}','{{totals.shipping}}','{{totals.grand}}',
+            '{{shipping.address1}}','{{shipping.address2}}','{{shipping.postcode}}','{{shipping.carrier}}','{{shipping.tracking}}','{{shipping.shipped_at}}',
+            '{{totals.subtotal}}','{{totals.shipping}}','{{totals.grand}}','{{totals.refunded}}',
             '{{currency}}','{{items.table}}'
         ];
         $repl = [
@@ -137,9 +172,13 @@ final class Mailer
             $tok['shipping']['address1'] ?? '',
             $tok['shipping']['address2'] ?? '',
             $tok['shipping']['postcode'] ?? '',
+            $tok['shipping']['carrier'] ?? '',
+            $tok['shipping']['tracking'] ?? '',
+            $tok['shipping']['shipped_at'] ?? '',
             $tok['totals']['subtotal'] ?? '',
             $tok['totals']['shipping'] ?? '',
             $tok['totals']['grand'] ?? '',
+            $tok['totals']['refunded'] ?? '',
             $tok['currency'] ?? '',
             $tok['items']['table'] ?? '',
         ];

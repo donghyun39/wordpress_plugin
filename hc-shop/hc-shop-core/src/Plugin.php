@@ -3,7 +3,7 @@ namespace HC\Shop;
 
 final class Plugin
 {
-    public const VERSION = '0.2.0';
+    public const VERSION = '0.3.0';
     public static string $file;
 
     public static function boot(string $file): void
@@ -82,6 +82,10 @@ final class Plugin
         add_action('wp_ajax_hc_product_save', fn() => (new \HC\Shop\Admin\ProductAdmin())->ajaxSave());
         add_action('wp_ajax_hc_product_delete', fn() => (new \HC\Shop\Admin\ProductAdmin())->ajaxDelete());
         add_action('wp_ajax_hc_order_update_status', fn() => (new \HC\Shop\Admin\OrderAdmin())->ajaxUpdateStatus());
+        add_action('wp_ajax_hc_order_bulk_status', fn() => (new \HC\Shop\Admin\OrderAdmin())->ajaxBulkUpdateStatus());
+        add_action('wp_ajax_hc_order_save_shipping', fn() => (new \HC\Shop\Admin\OrderAdmin())->ajaxSaveShipping());
+        add_action('wp_ajax_hc_order_save_notes', fn() => (new \HC\Shop\Admin\OrderAdmin())->ajaxSaveNotes());
+        add_action('wp_ajax_hc_order_refund', fn() => (new \HC\Shop\Admin\OrderAdmin())->ajaxRefund());
         // Emails 미리보기/테스트 (항상 가용하도록 여기서도 보강)
         add_action('wp_ajax_hc_emails_preview', fn() => (new \HC\Shop\Admin\Emails())->ajaxPreview());
         add_action('wp_ajax_hc_emails_test', fn() => (new \HC\Shop\Admin\Emails())->ajaxTest());
