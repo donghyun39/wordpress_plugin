@@ -32,7 +32,7 @@ final class AuthController
             return $this->redirect_with_error('소셜 로그인이 비활성화되었습니다.');
         }
 
-        $redirect = wp_validate_redirect($req->get_param('redirect'), home_url('/'));
+        $redirect = esc_url_raw($req->get_param('redirect') ?: home_url('/'));
         $state = bin2hex(random_bytes(12));
         set_transient('hc_oauth_' . $state, ['redirect' => $redirect, 'ts' => time()], 10 * MINUTE_IN_SECONDS);
 
@@ -71,7 +71,6 @@ final class AuthController
         $saved = get_transient('hc_oauth_' . $state);
         delete_transient('hc_oauth_' . $state);
         $redirect = is_array($saved) ? ($saved['redirect'] ?? home_url('/')) : home_url('/');
-        $redirect = wp_validate_redirect($redirect, home_url('/'));
 
         if (!$code || !$state || empty($saved)) {
             return $this->redirect_with_error('인증요청이 만료되었거나 유효하지 않습니다.', $redirect);

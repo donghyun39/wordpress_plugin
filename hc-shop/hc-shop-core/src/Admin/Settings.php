@@ -140,7 +140,6 @@ final class Settings
         $s = $this->get();
         $stock_decrement_on_paid = (int) ($s['stock_decrement_on_paid'] ?? 1);
         $stock_restore_on_cancel = (int) ($s['stock_restore_on_cancel'] ?? 1);
-        $stock_restore_on_refund = (int) ($s['stock_restore_on_refund'] ?? 1);
         $low_stock_threshold = (int) ($s['low_stock_threshold'] ?? 0);
         $low_stock_notify = (int) ($s['low_stock_notify'] ?? 0);
 
@@ -153,10 +152,6 @@ final class Settings
                     <tr>
                         <th>취소 시 재고 복원</th>
                         <td><label><input type="checkbox" name="stock_restore_on_cancel" value="1" <?php checked($stock_restore_on_cancel, 1); ?>> 사용</label></td>
-                    </tr>
-                    <tr>
-                        <th>환불 시 재고 복원</th>
-                        <td><label><input type="checkbox" name="stock_restore_on_refund" value="1" <?php checked($stock_restore_on_refund, 1); ?>> 사용</label></td>
                     </tr>
                     <tr>
                         <th>낮은 재고 임계값</th>
@@ -328,7 +323,6 @@ final class Settings
                 $this->save([
                     'stock_decrement_on_paid' => isset($_POST['stock_decrement_on_paid']) ? 1 : 0,
                     'stock_restore_on_cancel' => isset($_POST['stock_restore_on_cancel']) ? 1 : 0,
-                    'stock_restore_on_refund' => isset($_POST['stock_restore_on_refund']) ? 1 : 0,
                     'low_stock_threshold' => max(0, (int) ($_POST['low_stock_threshold'] ?? 0)),
                     'low_stock_notify' => isset($_POST['low_stock_notify']) ? 1 : 0,
                 ]);
